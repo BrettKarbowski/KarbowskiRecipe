@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model="clr-namespace:KarbowskiRecipe.Model"
+             xmlns:viewmodel="clr-namespace:KarbowskiRecipe.ViewModel"
+             Title="{Binding Title}"
+             x:Class="KarbowskiRecipe.MainPage">
+
+    <Grid ColumnDefinitions="*,*"
+          ColumnSpacing="5"
+          RowDefinitions="*,Auto">
+        
+        <RefreshView Grid.ColumnSpan="2"
+                     Command="{Binding GetRecipesCommand}"
+                     IsRefreshing="{Binding IsRefreshing}">
+
+            <CollectionView ItemsSource="{Binding Recipes}"
+                        SelectionMode="None">
+
+                <CollectionView.EmptyView>
+                    <Label Text="Once Load Recipes is clicked, Pull down to refresh the page and have a random assortment of recipes generated. Swipe left on a recipe to find the save button. Click on a recipe to learn the details of said recipe. Click the liked recipes to view all the recipes you liked - You will still be able to see recipe details by clicking on the recipe name. To delete a liked recipe, swipe left on the recipe and click Remove Recipe. Happy recipe hunting! :)"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           LineBreakMode="WordWrap"
+                           Padding="10" />
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:Recipe">
+                        <SwipeView>
+                            <SwipeView.RightItems>
+                                <SwipeItems>
+                                    <SwipeItem Text="Save"
+                                               BackgroundColor="LightGreen"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:RecipesViewModel}}, Path=SaveRecipeCommand}"
+                                               CommandParameter="{Binding .}" />
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+                            <Grid Padding="10">
+
+                                <Frame HeightRequest="150"
+                                       Padding="0"
+                                       BackgroundColor="DarkSeaGreen">
+
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer CommandParameter="{Binding .}"
+                                                              Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:RecipesViewModel}}, Path=GoToDetailsCommand}" />
+
+                                    </Frame.GestureRecognizers>
+
+                                    <Grid Padding="0"
+                                          ColumnDefinitions="250, *">
+
+                                        <Image Aspect="AspectFill"
+                                               Source="{Binding Image}"
+                                               WidthRequest="250"
+                                               HeightRequest="250" />
+
+                                        <VerticalStackLayout Grid.Column="1"
+                                                             Padding="10"
+                                                             HorizontalOptions="Center"
+                                                             VerticalOptions="Center">
+
+                                            <Label Text="{Binding Name}" 
+                                                   HorizontalOptions="Center"
+                                                   FontSize="30"
+                                                   FontAttributes="Bold"/>
+
+                                            <Label Text="{Binding Description}" />
+
+                                        </VerticalStackLayout>
+
+                                    </Grid>
+                                </Frame>
+                            </Grid>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+            </CollectionView>
+        </RefreshView>
+
+        <Button Text="Load Recipes"
+                Command="{Binding GetRecipesCommand}"
+                IsEnabled="{Binding IsNotBusy}"
+                Grid.Row="1"
+                Margin="8"
+                BackgroundColor="DarkSeaGreen"/>
+
+        <Button Text="Liked Recipes"
+                Command="{Binding GoToLikedRecipesCommand}"
+                Grid.Column="2"
+                Grid.Row="1"
+                Margin="8"
+                BackgroundColor="DarkSeaGreen"/>
+
+        <ActivityIndicator IsVisible="{Binding IsBusy}"
+                           IsRunning="{Binding IsBusy}"
+                           VerticalOptions="CenterAndExpand"
+                           Grid.RowSpan="2"
+                           Grid.ColumnSpan="2" />
+
+    </Grid>
+
+</ContentPage>

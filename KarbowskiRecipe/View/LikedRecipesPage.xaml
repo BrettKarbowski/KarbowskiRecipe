@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="KarbowskiRecipe.View.LikedRecipesPage"
+             xmlns:model="clr-namespace:KarbowskiRecipe.Model"
+             xmlns:viewmodel="clr-namespace:KarbowskiRecipe.ViewModel"
+             Title="Liked Recipes">
+
+    <StackLayout Padding="10">
+
+        <Label Text="Liked Recipes"
+               FontSize="25"
+               FontAttributes="Bold" />
+
+        <CollectionView ItemsSource="{Binding SavedRecipes}"
+                SelectionMode="None"
+                EmptyView="No liked recipes">
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:Recipe">
+
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems>
+                                <SwipeItem Text="Remove Recipe"
+                                           BackgroundColor="LightCoral"
+                                           Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:RecipesViewModel}}, Path=RemoveLikedRecipeCommand}"
+                                           CommandParameter="{Binding .}" />
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+
+                        <StackLayout>
+                            <Label Text="{Binding Name}" 
+                                   FontSize="30" 
+                                   Padding="5"
+                                   HorizontalOptions="Center">
+
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:RecipesViewModel}}, Path=GoToDetailsCommand}"
+                                                          CommandParameter="{Binding .}" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </StackLayout>
+
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </StackLayout>
+</ContentPage>
